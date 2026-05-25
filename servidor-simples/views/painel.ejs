@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel</title>
+    <link rel="stylesheet" href="/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bem-vindo, <%= usuario.nome %>!</h1>
+        <p style="text-align:center; color:#a0a0c0; margin-bottom: 24px;">
+            Logado como <strong><%= usuario.login %></strong>
+        </p>
+        <a href="/logout" class="btn">Sair</a>
+    </div>
+</body>
+</html>
