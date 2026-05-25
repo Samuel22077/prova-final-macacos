@@ -1,0 +1,31 @@
+Vou mostrar um exemplo prático do fluxo completo — do banco até aparecer na tela.
+
+Situação: mostrar o nome do usuário logado na tela.
+
+1. No server.js — busca no banco e passa para a view:
+jsapp.get('/painel', async (req, res) => {
+
+    // Busca o usuário no banco pelo login da sessão
+    const usuario = await db.collection('usuarios').findOne({ 
+        login: req.session.usuario.login 
+    });
+
+    // Passa os dados para a view
+    res.render('painel', { 
+        nome:  usuario.nome,
+        login: usuario.login,
+        data:  usuario.criadoEm
+    });
+});
+
+No views/painel.ejs — usa os dados:
+html<h1>Olá, <%= nome %>!</h1>
+
+<p>Seu login: <%= login %></p>
+
+<p>Cadastrado em: <%= data %></p>
+
+3. Resultado na tela:
+Olá, João Silva!
+Seu login: joaosilva
+Cadastrado em: Mon May 19 2026
