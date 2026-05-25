@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Carro — Concessionária</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <div class="pagina-centralizada">
+        <div class="caixa-formulario caixa-larga">
+
+            <div class="cabecalho-form">
+                <h1 class="titulo-form">Editar Carro</h1>
+                <p class="subtitulo-form">
+                    Editando: <strong><%= carro.marca %> <%= carro.modelo %></strong>
+                </p>
+            </div>
+
+            <form action="/carros/atualizar/<%= carro._id %>?_method=PUT" method="POST" class="formulario">
+
+                <div class="campo-form">
+                    <label for="marca">Marca</label>
+                    <input type="text" id="marca" name="marca" value="<%= carro.marca %>" required />
+                </div>
+
+                <div class="campo-form">
+                    <label for="modelo">Modelo</label>
+                    <input type="text" id="modelo" name="modelo" value="<%= carro.modelo %>" required />
+                </div>
+
+                <div class="campos-duplos">
+                    <div class="campo-form">
+                        <label for="ano">Ano</label>
+                        <input type="number" id="ano" name="ano" value="<%= carro.ano %>" min="1900" max="2026" required />
+                    </div>
+                    <div class="campo-form">
+                        <label for="quantidade_disponivel">Quantidade em estoque</label>
+                        <input type="number" id="quantidade_disponivel" name="quantidade_disponivel" value="<%= carro.quantidade_disponivel %>" min="0" required />
+                    </div>
+                </div>
+
+                <div class="acoes-form">
+                    <a href="/carros/gerencia" class="btn-contorno">Cancelar</a>
+                    <button type="submit" class="btn-principal">Salvar Alterações</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

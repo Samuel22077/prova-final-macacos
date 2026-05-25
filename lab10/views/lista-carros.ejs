@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carros Disponíveis — Concessionária</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <nav class="barra-nav">
+        <div class="nav-logo">🚗 Concessionária</div>
+        <div class="nav-acoes">
+            <span class="nav-usuario">Olá, <%= usuarioNome %>!</span>
+            <a href="/carros/gerencia" class="btn-nav">Gerenciar</a>
+            <a href="/usuario/sair" class="btn-nav btn-nav-perigo">Sair</a>
+        </div>
+    </nav>
+
+    <main class="conteudo-principal">
+
+        <div class="cabecalho-pagina">
+            <h1 class="titulo-pagina">Carros Disponíveis</h1>
+            <p class="subtitulo-pagina">Encontre o carro ideal para você</p>
+        </div>
+
+        <% if (carros.length === 0) { %>
+            <div class="aviso-vazio">
+                <p>🚫 Nenhum carro cadastrado ainda.</p>
+            </div>
+        <% } else { %>
+            <div class="grade-carros">
+                <% carros.forEach(function(carro) { %>
+                    <div class="card-carro <%= carro.quantidade_disponivel === 0 ? 'card-esgotado' : '' %>">
+
+                        <div class="icone-carro">🚘</div>
+
+                        <div class="info-carro">
+                            <h2 class="nome-carro"><%= carro.marca %> <%= carro.modelo %></h2>
+                            <p class="ano-carro">Ano: <%= carro.ano %></p>
+
+                            <% if (carro.quantidade_disponivel === 0) { %>
+                                <span class="selo-esgotado">🔴 Esgotado</span>
+                            <% } else { %>
+                                <span class="estoque-disponivel">
+                                    ✅ <%= carro.quantidade_disponivel %> disponível(is)
+                                </span>
+                            <% } %>
+                        </div>
+
+                        <% if (carro.quantidade_disponivel > 0) { %>
+                            <form action="/carros/vender/<%= carro._id %>" method="POST">
+                                <button type="submit" class="btn-principal btn-bloco">
+                                    Comprar
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <button class="btn-principal btn-bloco btn-desabilitado" disabled>
+                                Indisponível
+                            </button>
+                        <% } %>
+
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+    </main>
+
+</body>
+</html>

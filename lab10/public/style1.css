@@ -1,0 +1,62 @@
+body{
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    min-height: 100vh;
+
+    font-size: 25px;
+
+    background: radial-gradient(circle at top, #1a1a2e, #0f172a 70%);
+    color: #f97316;
+}
+
+.tabela{
+    width: auto;
+    margin: auto;
+
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+
+td{
+    border: 2px solid #2f3b52;
+    padding: 5px 10px;
+}
+
+.botao{
+ position: fixed;
+    top: 10px;
+    left: 5px;
+    font-size: 15px;
+    text-decoration: none;
+    display: block;
+    width: fit-content;
+
+    font-size: 15px;
+
+    border: 2px solid #00ff88;
+    padding: 10px 10px;
+
+    background-color: #001a33;
+    color: #00ff88;
+
+    border-radius: 8px;
+    font-weight: bold;
+}
+a{
+color: #00ff88;
+text-decoration: none;
+}
+
+a:hover{
+color: #10a35e;
+}
+.nome{
+color: white;
+}
+.link{
+color: white;
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Carros — Concessionária</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <nav class="barra-nav">
+        <div class="nav-logo">🚗 Concessionária</div>
+        <div class="nav-acoes">
+            <span class="nav-usuario">Olá, <%= usuarioNome %>!</span>
+            <a href="/carros/lista" class="btn-nav">Ver Vitrine</a>
+            <a href="/usuario/sair" class="btn-nav btn-nav-perigo">Sair</a>
+        </div>
+    </nav>
+
+    <main class="conteudo-principal">
+
+        <div class="cabecalho-pagina cabecalho-com-botao">
+            <div>
+                <h1 class="titulo-pagina">Gerenciar Carros</h1>
+                <p class="subtitulo-pagina">Cadastre, edite ou remova veículos do estoque</p>
+            </div>
+            <a href="/carros/cadastrar" class="btn-principal">+ Novo Carro</a>
+        </div>
+
+        <div class="aviso aviso-sucesso" id="avisoSucesso" style="display: none;"></div>
+        <div class="aviso aviso-erro"    id="avisoErro"    style="display: none;">
+            ⚠️ Ocorreu um erro. Tente novamente.
+        </div>
+
+        <% if (carros.length === 0) { %>
+            <div class="aviso-vazio">
+                <p>🚗 Nenhum carro cadastrado. Clique em "+ Novo Carro" para começar.</p>
+            </div>
+        <% } else { %>
+            <div class="tabela-wrapper">
+                <table class="tabela-carros">
+                    <thead>
+                        <tr>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Ano</th>
+                            <th>Estoque</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% carros.forEach(function(carro) { %>
+                            <tr class="<%= carro.quantidade_disponivel === 0 ? 'linha-esgotada' : '' %>">
+                                <td><%= carro.marca %></td>
+                                <td><%= carro.modelo %></td>
+                                <td><%= carro.ano %></td>
+                                <td>
+                                    <% if (carro.quantidade_disponivel === 0) { %>
+                                        <span class="selo-esgotado">🔴 Esgotado</span>
+                                    <% } else { %>
+                                        <span class="estoque-ok"><%= carro.quantidade_disponivel %> un.</span>
+                                    <% } %>
+                                </td>
+                                <td class="coluna-acoes">
+                                    <a href="/carros/atualizar/<%= carro._id %>" class="btn-acao btn-editar">
+                                        ✏️ Editar
+                                    </a>
+                                    <a href="/carros/remover/<%= carro._id %>" class="btn-acao btn-remover">
+                                        🗑️ Remover
+                                    </a>
+                                    <% if (carro.quantidade_disponivel > 0) { %>
+                                        <form action="/carros/vender/<%= carro._id %>" method="POST" style="display:inline">
+                                            <button type="submit" class="btn-acao btn-vender">
+                                                💰 Vender
+                                            </button>
+                                        </form>
+                                    <% } else { %>
+                                        <button class="btn-acao btn-desabilitado" disabled>
+                                            Esgotado
+                                        </button>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+
+    </main>
+
+    <script>
+        const parametros = new URLSearchParams(window.location.search);
+        const mensagens = {
+            cadastro:    '✅ Carro cadastrado com sucesso!',
+            atualizacao: '✅ Carro atualizado com sucesso!',
+            remocao:     '✅ Carro removido com sucesso!'
+        };
+
+        const sucesso = parametros.get('sucesso');
+        if (sucesso && mensagens[sucesso]) {
+            const aviso = document.getElementById('avisoSucesso');
+            aviso.textContent = mensagens[sucesso];
+            aviso.style.display = 'block';
+        }
+
+        if (parametros.get('erro')) {
+            document.getElementById('avisoErro').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

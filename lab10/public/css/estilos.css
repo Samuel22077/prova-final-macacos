@@ -1,0 +1,560 @@
+/* ─────────────────────────────────────────────────────────
+   public/css/estilos.css — Estilos globais do sistema
+   Aplicado em todas as páginas (HTML e EJS).
+   Organizado por seções: variáveis, reset, componentes,
+   páginas específicas e responsividade.
+───────────────────────────────────────────────────────── */
+
+/* ── VARIÁVEIS GLOBAIS ──────────────────────────────────
+   Centralizamos todas as cores e fontes aqui.
+   Para mudar a identidade visual, basta alterar este bloco.
+────────────────────────────────────────────────────────── */
+:root {
+    --cor-fundo:          #f0f4f8;       /* fundo geral das páginas */
+    --cor-fundo-card:     #ffffff;       /* fundo dos cards e formulários */
+    --cor-primaria:       #1a56db;       /* azul principal — botões e links */
+    --cor-primaria-hover: #1648c0;       /* azul escuro — hover dos botões */
+    --cor-perigo:         #e02424;       /* vermelho — ações destrutivas */
+    --cor-perigo-hover:   #c81e1e;       /* vermelho escuro — hover */
+    --cor-sucesso:        #057a55;       /* verde — mensagens de sucesso */
+    --cor-alerta:         #9f580a;       /* laranja — mensagens de aviso */
+    --cor-texto:          #111827;       /* texto principal */
+    --cor-texto-suave:    #6b7280;       /* texto secundário e legendas */
+    --cor-borda:          #e5e7eb;       /* bordas de cards e inputs */
+    --cor-nav:            #1e293b;       /* fundo da barra de navegação */
+    --cor-esgotado:       #fef2f2;       /* fundo do card esgotado */
+    --fonte-principal:    'Segoe UI', Arial, sans-serif;
+    --raio-borda:         10px;
+    --sombra-card:        0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ── RESET GERAL ────────────────────────────────────────
+   Remove margens e paddings padrão do navegador.
+────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--fonte-principal);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    min-height: 100vh;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ── BARRA DE NAVEGAÇÃO ─────────────────────────────────
+   Aparece no topo das páginas internas (lista e gerência).
+────────────────────────────────────────────────────────── */
+.barra-nav {
+    background: var(--cor-nav);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.nav-acoes {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nav-usuario {
+    color: #94a3b8;
+    font-size: 0.88rem;
+}
+
+.btn-nav {
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #ffffff;
+    border: 1px solid #334155;
+    transition: background 0.2s;
+}
+
+.btn-nav:hover { background: #334155; }
+
+.btn-nav-perigo {
+    border-color: var(--cor-perigo);
+    color: #fca5a5;
+}
+
+.btn-nav-perigo:hover { background: var(--cor-perigo); color: #fff; }
+
+/* ── CONTEÚDO PRINCIPAL ─────────────────────────────────
+   Área de conteúdo das páginas internas.
+────────────────────────────────────────────────────────── */
+.conteudo-principal {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+}
+
+.cabecalho-pagina {
+    margin-bottom: 32px;
+}
+
+/* Cabeçalho com título à esquerda e botão à direita */
+.cabecalho-com-botao {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.titulo-pagina {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin-bottom: 4px;
+}
+
+.subtitulo-pagina {
+    color: var(--cor-texto-suave);
+    font-size: 0.95rem;
+}
+
+/* ── GRADE DE CARROS ────────────────────────────────────
+   2.1 — Cor de fundo definida em :root (--cor-fundo)
+   2.2 — Centralização dos anúncios via CSS Grid
+────────────────────────────────────────────────────────── */
+.grade-carros {
+    /* Grid responsivo: colunas de no mínimo 260px, centralizadas */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+
+    /* Centraliza o grid na página */
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ── CARD DE CARRO (VITRINE) ────────────────────────────
+   Card exibido na listagem pública de veículos.
+────────────────────────────────────────────────────────── */
+.card-carro {
+    background: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--sombra-card);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.card-carro:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* Card com visual acinzentado quando o estoque é zero */
+.card-esgotado {
+    background: var(--cor-esgotado);
+    opacity: 0.75;
+}
+
+.icone-carro {
+    font-size: 2.5rem;
+}
+
+.nome-carro {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+.ano-carro {
+    font-size: 0.88rem;
+    color: var(--cor-texto-suave);
+}
+
+/* Selo vermelho "Esgotado" */
+.selo-esgotado {
+    display: inline-block;
+    background: #fee2e2;
+    color: var(--cor-perigo);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+
+/* Indicador verde de estoque disponível */
+.estoque-disponivel,
+.estoque-ok {
+    display: inline-block;
+    background: #d1fae5;
+    color: var(--cor-sucesso);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+
+/* ── TABELA DE GERÊNCIA ─────────────────────────────────
+   Tabela administrativa com os carros e botões de ação.
+────────────────────────────────────────────────────────── */
+.tabela-wrapper {
+    overflow-x: auto; /* permite rolar horizontalmente em telas pequenas */
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+}
+
+.tabela-carros {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--cor-fundo-card);
+    font-size: 0.92rem;
+}
+
+.tabela-carros thead {
+    background: var(--cor-nav);
+    color: #ffffff;
+}
+
+.tabela-carros th {
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabela-carros td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cor-borda);
+    vertical-align: middle;
+}
+
+.tabela-carros tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Linha com cor diferente para carros esgotados */
+.linha-esgotada {
+    background: #fff5f5;
+}
+
+.coluna-acoes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ── BOTÕES DE AÇÃO DA TABELA ───────────────────────────
+   Pequenos botões usados nas colunas de ação da tabela.
+────────────────────────────────────────────────────────── */
+.btn-acao {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
+
+.btn-acao:hover { opacity: 0.85; }
+
+.btn-editar {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.btn-remover {
+    background: #fee2e2;
+    color: var(--cor-perigo);
+}
+
+.btn-vender {
+    background: #d1fae5;
+    color: var(--cor-sucesso);
+}
+
+.btn-desabilitado {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* ── PÁGINAS COM FORMULÁRIO CENTRALIZADO ────────────────
+   Layout das páginas de login, cadastro, etc.
+────────────────────────────────────────────────────────── */
+.pagina-centralizada {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--cor-fundo);
+}
+
+.caixa-formulario {
+    background: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: var(--sombra-card);
+}
+
+/* Versão mais larga para formulários de carro */
+.caixa-larga {
+    max-width: 560px;
+}
+
+/* ── CABEÇALHO DO FORMULÁRIO ────────────────────────────
+   Ícone, título e subtítulo no topo do card.
+────────────────────────────────────────────────────────── */
+.cabecalho-form {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.logo-sistema {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+}
+
+.titulo-form {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin-bottom: 6px;
+}
+
+.subtitulo-form {
+    color: var(--cor-texto-suave);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ── CAMPOS DO FORMULÁRIO ───────────────────────────────
+   Estilo dos labels e inputs.
+────────────────────────────────────────────────────────── */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo-form label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+.campo-form input {
+    padding: 10px 14px;
+    border: 1.5px solid var(--cor-borda);
+    border-radius: 8px;
+    font-size: 0.92rem;
+    color: var(--cor-texto);
+    background: #fff;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.campo-form input:focus {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+}
+
+/* Dois campos lado a lado */
+.campos-duplos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Botões de ação do formulário */
+.acoes-form {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+/* ── BOTÕES GLOBAIS ─────────────────────────────────────
+   Estilos reutilizáveis de botão para todo o sistema.
+────────────────────────────────────────────────────────── */
+.btn-principal {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--cor-primaria);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+
+.btn-principal:hover {
+    background: var(--cor-primaria-hover);
+    transform: translateY(-1px);
+}
+
+/* Botão que ocupa 100% da largura */
+.btn-bloco { width: 100%; text-align: center; }
+
+.btn-contorno {
+    display: inline-block;
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--cor-texto);
+    border: 1.5px solid var(--cor-borda);
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-contorno:hover { background: var(--cor-fundo); }
+
+.btn-perigo {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--cor-perigo);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-perigo:hover { background: var(--cor-perigo-hover); }
+
+/* ── AVISOS E ALERTAS ───────────────────────────────────
+   Mensagens de feedback exibidas em resposta a ações.
+────────────────────────────────────────────────────────── */
+.aviso {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.aviso-sucesso {
+    background: #ecfdf5;
+    color: var(--cor-sucesso);
+    border: 1px solid #a7f3d0;
+}
+
+.aviso-erro {
+    background: #fff1f2;
+    color: var(--cor-perigo);
+    border: 1px solid #fecdd3;
+}
+
+/* Aviso de lista vazia */
+.aviso-vazio {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--cor-texto-suave);
+    font-size: 1rem;
+    background: var(--cor-fundo-card);
+    border-radius: var(--raio-borda);
+    border: 1px dashed var(--cor-borda);
+}
+
+/* ── PÁGINA DE CONFIRMAÇÃO (REMOVER) ────────────────────
+   Estilos da página de confirmação antes de deletar.
+────────────────────────────────────────────────────────── */
+.icone-alerta {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 8px;
+}
+
+.titulo-perigo { color: var(--cor-perigo); }
+
+.card-confirmacao {
+    background: #fff5f5;
+    border: 1px solid #fecdd3;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.linha-detalhe {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.detalhe-chave {
+    color: var(--cor-texto-suave);
+    font-weight: 500;
+}
+
+.detalhe-valor {
+    color: var(--cor-texto);
+    font-weight: 600;
+}
+
+/* ── LINK DE RODAPÉ DOS FORMULÁRIOS ────────────────────── */
+.link-rodape {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.88rem;
+    color: var(--cor-texto-suave);
+}
+
+.link-rodape a {
+    color: var(--cor-primaria);
+    font-weight: 600;
+}
+
+.link-rodape a:hover { text-decoration: underline; }
+
+/* ── RESPONSIVIDADE ─────────────────────────────────────
+   Ajustes para telas menores (celulares).
+────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .barra-nav          { padding: 12px 20px; }
+    .conteudo-principal { padding: 24px 16px; }
+    .cabecalho-com-botao { flex-direction: column; }
+    .campos-duplos      { grid-template-columns: 1fr; }
+    .coluna-acoes       { flex-direction: column; }
+    .acoes-form         { flex-direction: column; }
+    .grade-carros       { grid-template-columns: 1fr; }
+    .caixa-formulario   { padding: 28px 20px; }
+}

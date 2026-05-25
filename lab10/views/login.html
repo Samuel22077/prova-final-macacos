@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Concessionária</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <!-- ── PÁGINA DE LOGIN ────────────────────────────────
+         Formulário de autenticação do usuário.
+         Ao enviar, os dados vão para POST /usuario/login.
+         Se as credenciais forem válidas, redireciona para
+         a listagem de carros e inicia a sessão.
+    ─────────────────────────────────────────────────────── -->
+
+    <div class="pagina-centralizada">
+        <div class="caixa-formulario">
+
+            <!-- Cabeçalho do card -->
+            <div class="cabecalho-form">
+                <div class="logo-sistema">🚗</div>
+                <h1 class="titulo-form">Entrar</h1>
+                <p class="subtitulo-form">Acesse o sistema da concessionária</p>
+            </div>
+
+            <!-- Aviso de erro de credenciais -->
+            <div class="aviso aviso-erro" id="avisoErro" style="display: none;">
+                ⚠️ Login ou senha incorretos. Tente novamente.
+            </div>
+
+            <!-- Aviso de sucesso vindo do cadastro -->
+            <div class="aviso aviso-sucesso" id="avisoSucesso" style="display: none;">
+                ✅ Cadastro realizado! Faça login para continuar.
+            </div>
+
+            <!-- Formulário de login -->
+            <form action="/usuario/login" method="POST" class="formulario">
+
+                <!-- Campo: Login -->
+                <div class="campo-form">
+                    <label for="login">Login</label>
+                    <input
+                        type="text"
+                        id="login"
+                        name="login"
+                        placeholder="Seu login"
+                        required
+                        autocomplete="username"
+                    />
+                </div>
+
+                <!-- Campo: Senha -->
+                <div class="campo-form">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Sua senha"
+                        required
+                        autocomplete="current-password"
+                    />
+                </div>
+
+                <button type="submit" class="btn-principal btn-bloco">Entrar</button>
+            </form>
+
+            <!-- Link para criar conta -->
+            <p class="link-rodape">Não tem conta? <a href="/usuario/cadastro">Cadastrar-se</a></p>
+
+        </div>
+    </div>
+
+    <script>
+        // Exibe o aviso correto com base nos parâmetros da URL
+        const parametros = new URLSearchParams(window.location.search);
+
+        if (parametros.get('erro')) {
+            document.getElementById('avisoErro').style.display = 'block';
+        }
+
+        if (parametros.get('sucesso') === 'cadastro') {
+            document.getElementById('avisoSucesso').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

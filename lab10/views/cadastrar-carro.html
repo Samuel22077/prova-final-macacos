@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Carro — Concessionária</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <!-- ── PÁGINA DE CADASTRO DE CARRO ────────────────────
+         Formulário estático para adicionar um novo veículo.
+         Ao enviar, os dados vão para POST /carros/cadastrar.
+    ─────────────────────────────────────────────────────── -->
+
+    <div class="pagina-centralizada">
+        <div class="caixa-formulario caixa-larga">
+
+            <!-- Cabeçalho -->
+            <div class="cabecalho-form">
+                <h1 class="titulo-form">Cadastrar Novo Carro</h1>
+                <p class="subtitulo-form">Preencha os dados do veículo</p>
+            </div>
+
+            <!-- Aviso de erro -->
+            <div class="aviso aviso-erro" id="avisoErro" style="display: none;">
+                ⚠️ Erro ao cadastrar. Verifique os dados e tente novamente.
+            </div>
+
+            <!-- Formulário — envia via POST para /carros/cadastrar -->
+            <form action="/carros/cadastrar" method="POST" class="formulario">
+
+                <!-- Campo: Marca -->
+                <div class="campo-form">
+                    <label for="marca">Marca</label>
+                    <input
+                        type="text"
+                        id="marca"
+                        name="marca"
+                        placeholder="Ex: Pegeout"
+                        required
+                    />
+                </div>
+
+                <!-- Campo: Modelo -->
+                <div class="campo-form">
+                    <label for="modelo">Modelo</label>
+                    <input
+                        type="text"
+                        id="modelo"
+                        name="modelo"
+                        placeholder="Ex: 208"
+                        required
+                    />
+                </div>
+
+                <!-- Linha com dois campos lado a lado -->
+                <div class="campos-duplos">
+                    <!-- Campo: Ano -->
+                    <div class="campo-form">
+                        <label for="ano">Ano</label>
+                        <input
+                            type="number"
+                            id="ano"
+                            name="ano"
+                            placeholder="Ex: 2023"
+                            min="1900"
+                            max="2026"
+                            required
+                        />
+                    </div>
+
+                    <!-- Campo: Quantidade -->
+                    <div class="campo-form">
+                        <label for="quantidade_disponivel">Quantidade em estoque</label>
+                        <input
+                            type="number"
+                            id="quantidade_disponivel"
+                            name="quantidade_disponivel"
+                            placeholder="Ex: 5"
+                            min="0"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <!-- Botões de ação -->
+                <div class="acoes-form">
+                    <a href="/carros/gerencia" class="btn-contorno">Cancelar</a>
+                    <button type="submit" class="btn-principal">Cadastrar</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Exibe o aviso de erro se a URL contiver ?erro=1
+        if (new URLSearchParams(window.location.search).get('erro')) {
+            document.getElementById('avisoErro').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

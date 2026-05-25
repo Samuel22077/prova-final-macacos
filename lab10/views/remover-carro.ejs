@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remover Carro — Concessionária</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <div class="pagina-centralizada">
+        <div class="caixa-formulario">
+
+            <div class="icone-alerta">⚠️</div>
+
+            <div class="cabecalho-form">
+                <h1 class="titulo-form titulo-perigo">Confirmar Remoção</h1>
+                <p class="subtitulo-form">
+                    Você está prestes a remover permanentemente o carro abaixo.
+                    Esta ação <strong>não pode ser desfeita</strong>.
+                </p>
+            </div>
+
+            <div class="card-confirmacao">
+                <div class="linha-detalhe">
+                    <span class="detalhe-chave">Marca:</span>
+                    <span class="detalhe-valor"><%= carro.marca %></span>
+                </div>
+                <div class="linha-detalhe">
+                    <span class="detalhe-chave">Modelo:</span>
+                    <span class="detalhe-valor"><%= carro.modelo %></span>
+                </div>
+                <div class="linha-detalhe">
+                    <span class="detalhe-chave">Ano:</span>
+                    <span class="detalhe-valor"><%= carro.ano %></span>
+                </div>
+                <div class="linha-detalhe">
+                    <span class="detalhe-chave">Estoque:</span>
+                    <span class="detalhe-valor"><%= carro.quantidade_disponivel %> unidade(s)</span>
+                </div>
+            </div>
+
+            <form action="/carros/remover/<%= carro._id %>?_method=DELETE" method="POST">
+                <div class="acoes-form">
+                    <a href="/carros/gerencia" class="btn-contorno">Cancelar</a>
+                    <button type="submit" class="btn-perigo">🗑️ Sim, remover</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>
