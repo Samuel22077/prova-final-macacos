@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Bem-vindo, <%= usuario.nome %>!</h1>
+
+        <p style="text-align:center; color:#a0a0c0; margin-bottom: 24px;">
+            Você está logado como <strong><%= usuario.login %></strong>
+        </p>
+
+        <a href="/usuario/logout" class="btn">Sair</a>
+
+    </div>
+
+</body>
+</html>

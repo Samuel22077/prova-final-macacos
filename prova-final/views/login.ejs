@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Login</h1>
+
+        <% if (erro) { %>
+            <div class="msg-erro"><%= erro %></div>
+        <% } %>
+
+        <% if (sucesso) { %>
+            <div class="msg-sucesso"><%= sucesso %></div>
+        <% } %>
+
+        <form action="/usuario/login" method="POST">
+
+            <label>Login</label>
+            <input type="text" name="login" required placeholder="seu login">
+
+            <label>Senha</label>
+            <input type="password" name="senha" required placeholder="sua senha">
+
+            <button type="submit" class="btn">Entrar</button>
+
+        </form>
+
+        <p class="link-rodape">Não tem conta? <a href="/usuario/cadastro">Cadastre-se</a></p>
+
+    </div>
+
+</body>
+</html>
