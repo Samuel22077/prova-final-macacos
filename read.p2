@@ -1,0 +1,492 @@
+// ═══════════════════════════════════════════════════════════
+//  REFERÊNCIA COMPLETA — PROVA FULL STACK
+//  Node.js + Express + MongoDB (driver nativo) + EJS + Session
+// ═══════════════════════════════════════════════════════════
+
+
+
+
+// ─────────────────────────────────────────────────────────
+//  ESTRUTURA DE PASTAS
+// ─────────────────────────────────────────────────────────
+//
+//  projeto/
+//  ├── server.js               → sobe o servidor
+//  ├── database.js             → conecta ao MongoDB
+//  ├── .env                    → variáveis de ambiente
+//  ├── package.json            → dependências
+//  ├── models/
+//  │   └── Usuario.js          → operações no banco
+//  ├── routes/
+//  │   └── rotas-usuario.js    → rotas HTTP
+//  ├── views/
+//  │   ├── login.ejs           → página de login
+//  │   ├── cadastro.ejs        → página de cadastro
+//  │   └── painel.ejs          → página após login
+//  └── public/
+//      └── css/
+//          └── estilos.css     → estilos
+
+
+
+
+// ─────────────────────────────────────────────────────────
+//  COMANDOS ESSENCIAIS (rodar no CMD)
+// ─────────────────────────────────────────────────────────
+//
+//  npm install                 → instala dependências
+//  net start MongoDB           → liga o banco local
+//  npm start                   → sobe o servidor
+//  http://localhost:3000       → abre no navegador
+
+
+
+
+// ─────────────────────────────────────────────────────────
+//  .env
+// ─────────────────────────────────────────────────────────
+//
+//  MONGO_URI=mongodb+srv://usuario:senha@cluster0.xxx.mongodb.net/nomedobanco?appName=Cluster0
+//  SEGREDO_SESSAO=segredo123
+//  PORTA=3000
+//
+//  → Para banco local:
+//  MONGO_URI=mongodb://127.0.0.1:27017/nomedobanco
+
+
+
+
+// ─────────────────────────────────────────────────────────
+//  package.json
+// ─────────────────────────────────────────────────────────
+//
+//  {
+//    "name": "projeto",
+//    "version": "1.0.0",
+//    "main": "server.js",
+//    "scripts": {
+//      "start": "node server.js"
+//    },
+//    "dependencies": {
+//      "dotenv": "^16.6.1",
+//      "ejs": "^3.1.10",
+//      "express": "^4.22.2",
+//      "express-session": "^1.17.3",
+//      "mongodb": "^6.17.0"
+//    }
+//  }
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  database.js — CONEXÃO COM O MONGODB
+// ═══════════════════════════════════════════════════════════
+
+/*
+const { MongoClient } = require('mongodb');
+
+const uri    = process.env.MONGO_URI;   // pega do .env
+const client = new MongoClient(uri);
+
+let db; // variável global que guarda a conexão
+
+// Conecta ao banco — chamada uma vez ao subir o servidor
+async function conectar() {
+    await client.connect();
+    db = client.db(); // usa o banco definido na URI
+    console.log('MongoDB conectado');
+}
+
+// Retorna a coleção (tabela) solicitada
+// Uso: obterColecao('usuarios') → acessa a coleção "usuarios"
+function obterColecao(nome) {
+    return db.collection(nome);
+}
+
+module.exports = { conectar, obterColecao };
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  server.js — SERVIDOR PRINCIPAL
+// ═══════════════════════════════════════════════════════════
+
+/*
+require('dotenv').config(); // carrega o .env
+
+const express    = require('express');
+const session    = require('express-session');
+const path       = require('path');
+
+const { conectar }  = require('./database');
+const rotasUsuario  = require('./routes/rotas-usuario');
+
+const app   = express();
+const PORTA = process.env.PORTA || 3000;
+
+// ── EJS como motor de templates ──────────────────────────
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// ── Middlewares ───────────────────────────────────────────
+app.use(express.urlencoded({ extended: true })); // lê formulários
+app.use(express.json());                          // lê JSON
+app.use(express.static(path.join(__dirname, 'public'))); // arquivos estáticos
+
+// ── Sessão ────────────────────────────────────────────────
+app.use(session({
+    secret: process.env.SEGREDO_SESSAO || 'segredo-local',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 } // 1 hora
+}));
+
+// ── Rota raiz ─────────────────────────────────────────────
+app.get('/', (req, res) => {
+    res.redirect('/usuario/login'); // redireciona para login
+});
+
+// ── Rotas ─────────────────────────────────────────────────
+app.use('/usuario', rotasUsuario);
+
+// ── Conecta ao banco e sobe o servidor ───────────────────
+conectar()
+    .then(() => {
+        app.listen(PORTA, () => {
+            console.log(`Servidor rodando na porta ${PORTA}`);
+        });
+    })
+    .catch((erro) => {
+        console.log('Erro ao conectar no MongoDB');
+        console.log(erro);
+        process.exit(1);
+    });
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  models/Usuario.js — OPERAÇÕES NO BANCO
+// ═══════════════════════════════════════════════════════════
+
+/*
+const { obterColecao } = require('../database');
+const { ObjectId }     = require('mongodb'); // necessário para buscar por _id
+
+// Atalho para a coleção "usuarios"
+function colecao() {
+    return obterColecao('usuarios');
+}
+
+// ── CREATE — cadastrar novo usuário ───────────────────────
+async function criarUsuario({ nome, login, senha }) {
+    // Verifica se o login já existe
+    const existente = await colecao().findOne({ login: login.toLowerCase().trim() });
+    if (existente) throw new Error('Login já cadastrado');
+
+    return colecao().insertOne({
+        nome:     nome.trim(),
+        login:    login.toLowerCase().trim(),
+        senha,                    // ⚠️ em produção usar bcrypt
+        criadoEm: new Date()
+    });
+}
+
+// ── READ — buscar um usuário pelo login ───────────────────
+async function buscarPorLogin(login) {
+    return colecao().findOne({ login: login.toLowerCase().trim() });
+}
+
+// ── READ — listar todos os usuários ──────────────────────
+async function listarUsuarios() {
+    return colecao().find().toArray();
+}
+
+// ── UPDATE — atualizar senha ──────────────────────────────
+async function atualizarSenha(id, novaSenha) {
+    return colecao().updateOne(
+        { _id: new ObjectId(id) },      // filtro: encontra pelo _id
+        { $set: { senha: novaSenha } }  // $set: atualiza só o campo senha
+    );
+}
+
+// ── DELETE — remover usuário ──────────────────────────────
+async function deletarUsuario(id) {
+    return colecao().deleteOne({ _id: new ObjectId(id) });
+}
+
+module.exports = { criarUsuario, buscarPorLogin, listarUsuarios, atualizarSenha, deletarUsuario };
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  routes/rotas-usuario.js — ROTAS HTTP
+// ═══════════════════════════════════════════════════════════
+
+/*
+const express = require('express');
+const router  = express.Router();
+const { criarUsuario, buscarPorLogin } = require('../models/Usuario');
+
+// ── Middleware: bloqueia rota se não estiver logado ───────
+function exigirLogin(req, res, next) {
+    if (!req.session.usuario) return res.redirect('/usuario/login');
+    next(); // continua para a rota
+}
+
+// ── GET /usuario/cadastro — exibe o formulário ────────────
+router.get('/cadastro', (req, res) => {
+    res.render('cadastro', { erro: null, sucesso: null });
+});
+
+// ── POST /usuario/cadastro — salva no banco ───────────────
+router.post('/cadastro', async (req, res) => {
+    const { nome, login, senha } = req.body; // pega os campos do formulário
+    try {
+        await criarUsuario({ nome, login, senha });
+        // Após cadastro, vai para login com mensagem de sucesso
+        res.render('login', { erro: null, sucesso: 'Usuário cadastrado! Faça login.' });
+    } catch (err) {
+        // Se der erro (ex: login duplicado), volta para cadastro com a mensagem
+        res.render('cadastro', { erro: err.message, sucesso: null });
+    }
+});
+
+// ── GET /usuario/login — exibe o formulário ───────────────
+router.get('/login', (req, res) => {
+    res.render('login', { erro: null, sucesso: null });
+});
+
+// ── POST /usuario/login — verifica senha e cria sessão ───
+router.post('/login', async (req, res) => {
+    const { login, senha } = req.body;
+    try {
+        const usuario = await buscarPorLogin(login);
+
+        // Se não encontrou ou senha errada
+        if (!usuario || usuario.senha !== senha) {
+            return res.render('login', { erro: 'Login ou senha incorretos', sucesso: null });
+        }
+
+        // Salva o usuário na sessão
+        req.session.usuario = { id: usuario._id, nome: usuario.nome, login: usuario.login };
+
+        res.redirect('/usuario/painel'); // redireciona após login
+    } catch (err) {
+        res.render('login', { erro: 'Erro interno. Tente novamente.', sucesso: null });
+    }
+});
+
+// ── GET /usuario/painel — página após login ───────────────
+router.get('/painel', exigirLogin, (req, res) => {
+    res.render('painel', { usuario: req.session.usuario });
+});
+
+// ── GET /usuario/logout — encerra a sessão ────────────────
+router.get('/logout', (req, res) => {
+    req.session.destroy(); // apaga a sessão
+    res.redirect('/usuario/login');
+});
+
+module.exports = router;
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  views/login.ejs — PÁGINA DE LOGIN
+// ═══════════════════════════════════════════════════════════
+
+/*
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+
+        <!-- Mostra erro se existir -->
+        <% if (erro) { %>
+            <div class="msg-erro"><%= erro %></div>
+        <% } %>
+
+        <!-- Mostra sucesso se existir (ex: após cadastro) -->
+        <% if (sucesso) { %>
+            <div class="msg-sucesso"><%= sucesso %></div>
+        <% } %>
+
+        <!-- name dos inputs DEVE bater com req.body na rota -->
+        <form action="/usuario/login" method="POST">
+            <label>Login</label>
+            <input type="text" name="login" required>
+
+            <label>Senha</label>
+            <input type="password" name="senha" required>
+
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+
+        <p class="link-rodape">Não tem conta? <a href="/usuario/cadastro">Cadastre-se</a></p>
+    </div>
+</body>
+</html>
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  views/cadastro.ejs — PÁGINA DE CADASTRO
+// ═══════════════════════════════════════════════════════════
+
+/*
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Criar Conta</h1>
+
+        <% if (erro) { %>
+            <div class="msg-erro"><%= erro %></div>
+        <% } %>
+
+        <% if (sucesso) { %>
+            <div class="msg-sucesso"><%= sucesso %></div>
+        <% } %>
+
+        <form action="/usuario/cadastro" method="POST">
+            <label>Nome completo</label>
+            <input type="text" name="nome" required>
+
+            <label>Login</label>
+            <input type="text" name="login" required>
+
+            <label>Senha</label>
+            <input type="password" name="senha" required>
+
+            <button type="submit" class="btn">Cadastrar</button>
+        </form>
+
+        <p class="link-rodape">Já tem conta? <a href="/usuario/login">Entrar</a></p>
+    </div>
+</body>
+</html>
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  views/painel.ejs — PÁGINA APÓS LOGIN
+// ═══════════════════════════════════════════════════════════
+
+/*
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <!-- usuario.nome e usuario.login vêm da sessão -->
+        <h1>Bem-vindo, <%= usuario.nome %>!</h1>
+        <p>Logado como: <%= usuario.login %></p>
+        <a href="/usuario/logout" class="btn">Sair</a>
+    </div>
+</body>
+</html>
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  EJS — SINTAXE BÁSICA
+// ═══════════════════════════════════════════════════════════
+
+//  <%= variavel %>          → imprime o valor na tela
+//  <% if (x) { %>           → condicional (não imprime)
+//  <% } %>                  → fecha o bloco
+//  <% array.forEach(...) %> → loop
+//  <%- html %>              → imprime HTML sem escapar
+
+/*
+Exemplo de loop numa tabela:
+<% carros.forEach(function(carro) { %>
+    <tr>
+        <td><%= carro.marca %></td>
+        <td><%= carro.modelo %></td>
+    </tr>
+<% }); %>
+*/
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  MONGODB — OS 5 MÉTODOS ESSENCIAIS
+// ═══════════════════════════════════════════════════════════
+
+//  INSERT (Create)
+//  colecao().insertOne({ campo: valor, ... })
+
+//  FIND ONE (Read)
+//  colecao().findOne({ campo: valor })
+
+//  FIND ALL (Read)
+//  colecao().find().toArray()
+
+//  UPDATE (Update)
+//  colecao().updateOne({ _id: new ObjectId(id) }, { $set: { campo: valor } })
+
+//  DELETE (Delete)
+//  colecao().deleteOne({ _id: new ObjectId(id) })
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  FLUXO DO LOGIN — ENTENDER DE COR
+// ═══════════════════════════════════════════════════════════
+
+//  1. Usuário preenche login e senha no formulário
+//  2. POST /usuario/login recebe req.body.login e req.body.senha
+//  3. buscarPorLogin() faz findOne no banco
+//  4. Se não encontrou ou senha errada → renderiza login com erro
+//  5. Se ok → salva em req.session.usuario e redireciona
+//  6. Em rotas protegidas → verifica se req.session.usuario existe
+//  7. Logout → req.session.destroy() e redireciona para login
+
+
+
+
+// ═══════════════════════════════════════════════════════════
+//  O QUE MUDAR SE O PROFESSOR DER UM HTML DIFERENTE
+// ═══════════════════════════════════════════════════════════
+
+//  1. Coloca o arquivo na pasta views/
+//  2. Renomeia para .ejs
+//  3. Verifica se os name dos inputs são: nome, login, senha
+//     → Se forem diferentes, muda na rota: const { nome, login, senha } = req.body
+//  4. Adiciona as variáveis EJS onde precisar:
+//     <% if (erro) { %> ... <% } %>
+//  5. Verifica se o action do form bate com a rota:
+//     action="/usuario/login" method="POST"
